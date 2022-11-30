@@ -11,7 +11,23 @@ exports.setupdb = async (req, res) => {
       password: "Yash@12",
       email: "yash@gmail.com",
     };
-    const userData = await Model.UserModel.create(userSample);
+    const productSample = {
+      productPicture: "http://localhost:3000/a(1).jpg",
+      productName: "Abstract",
+      manufacturer: "Infosys",
+      cost: 5000,
+      rating: 4,
+      description: "Excellent Product in every way",
+      colors: 3,
+      discountPercentage: 20,
+      deliveryCharge: 100,
+      "avgRating.reviews": {
+        reviewComments: "yash",
+        reviewRating: 4,
+      },
+    };
+    // const userData = await Model.UserModel.create(userSample);
+    const productData = await Model.ProductModel.create(productSample);
     res.status(201).json({
       message: "Go ahead",
     });
@@ -71,7 +87,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.login = async (req,res) => {
+exports.login = async (req, res) => {
   Model.UserModel.findOne({
     $and: [{ email: req.body.email }, { password: req.body.password }],
   }).then((data) => {
@@ -83,36 +99,114 @@ exports.login = async (req,res) => {
       });
     }
   });
-}
+};
 
-exports.updatePassword = async (req,res) => {
+exports.updatePassword = async (req, res) => {
   let userEmail = req.params.username;
   //console.log(userEmail);
-  Model.UserModel.findOne({email : userEmail}).then((user) => {
-    if(user){
-      if(Validator.ValidatePassword(req.body.password)){
-        Model.UserModel.findOneAndUpdate({email: userEmail},req.body,{new: true}).then((data) => {
-          if(data){
+  Model.UserModel.findOne({ email: userEmail }).then((user) => {
+    if (user) {
+      if (Validator.ValidatePassword(req.body.password)) {
+        Model.UserModel.findOneAndUpdate({ email: userEmail }, req.body, {
+          new: true,
+        }).then((data) => {
+          if (data) {
             res.status(200).send(true);
-          }else{
+          } else {
             res.status(400).json({
               message: "Update Failed",
             });
           }
-        })
-      }else{
+        });
+      } else {
         res.status(400).json({
           message: "Invalid Password Criteria",
         });
       }
-    }else{
+    } else {
       res.status(400).json({
         message: "No such details exists",
       });
     }
-  })
-}
+  });
+};
 
-exports.getImages = async (req,res) => {
-  const path = ""
-}
+exports.getProducts = async (req, res) => {
+  Model.ProductModel.find(
+    {},
+    { _id: 0, avgRating: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+  ).then((data) => {
+    if (data.length > 0) {
+      res.status(200).json({
+        data,
+      });
+    } else {
+      res.status(400).json({
+        message: "No Product",
+      });
+    }
+  });
+};
+
+exports.getProductBySearch = async (req, res) => {
+  let productNameParam = req.params.productName;
+  Model.ProductModel.findOne(
+    { productName: productNameParam },
+    { _id: 0, avgRating: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+  ).then((product) => {
+    if (product) {
+      res.status(200).json({
+        data: product,
+      });
+    } else {
+      res.status(400).json({
+        message: "No such product",
+      });
+    }
+  });
+};
+
+exports.getProductDetails = async (req, res) => {
+  let productNameParam = req.params.productName;
+  Model.ProductModel.findOne(
+    { productName: productNameParam },
+    { _id: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+  ).then((product) => {
+    if (product) {
+      res.status(200).json({
+        data: product,
+      });
+    } else {
+      res.status(400).json({
+        message: "No such product",
+      });
+    }
+  });
+};
+
+exports.getDeals = async (req, res) => {
+  Model.ProductModel.find(
+    { discountPercentage: { $gt: 10 } },
+    {
+      avgRating: 0,
+      _id: 0,
+      productPicture: 0,
+      manufacturer: 0,
+      cost: 0,
+      rating: 0,
+      description: 0,
+      colors: 0,
+      deliveryCharge: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+    }
+  )
+    .sort({ discountPercentage: -1 })
+    .limit(5)
+    .then((products) => {
+      res.status(200).json({
+        data: products,
+      });
+    });
+};

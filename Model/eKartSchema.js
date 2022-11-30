@@ -36,28 +36,28 @@ const ekartUserModelSchema = new mongoose.Schema(
 const ekartProductSchema = new mongoose.Schema(
   {
     productPicture: {
-      type : String
+      type: String,
     },
     productName: {
-      type : String
+      type: String,
     },
     manufacturer: {
-      type : String
+      type: String,
     },
     cost: {
-      type: Number
+      type: Number,
     },
-    rating : {
-      type : Number
+    rating: {
+      type: Number,
     },
-    description : {
-      type: String
+    description: {
+      type: String,
     },
     colors: {
-      type: Number
+      type: Number,
     },
-    discountPercentage : {
-      type: Number
+    discountPercentage: {
+      type: Number,
     },
     deliveryCharge: {
       type: Number,
@@ -66,10 +66,10 @@ const ekartProductSchema = new mongoose.Schema(
       reviews: [
         {
           reviewRating: Number,
-          reviewComments: String
-        }
-      ]
-    }
+          reviewComments: String,
+        },
+      ],
+    },
   },
   {
     timestamps: {
@@ -79,7 +79,21 @@ const ekartProductSchema = new mongoose.Schema(
   }
 );
 
+// const ekartProductCartSchema = new mongoose.Schema(
+//   {
+
+//   },
+//   {
+//     timestamps: {
+//       createdAt: true,
+//       updatedAt: true,
+//     },
+//   }
+// );
+
 const UserModel = mongoose.model("users", ekartUserModelSchema);
+const ProductModel = mongoose.model("products", ekartProductSchema);
 module.exports = Model = {
   UserModel,
+  ProductModel,
 };

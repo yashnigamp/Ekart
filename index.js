@@ -5,6 +5,7 @@ const bodyparser = require('body-parser');
 const app = express();
 app.use(bodyparser.json());
 app.use('/',router);
+app.use(express.static(__dirname + '/Assets/Images'));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
