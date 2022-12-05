@@ -4,7 +4,7 @@ const router = express.Router();
 
 const controller = require('../Controller/eKartController');
 
-router.all('/setupdb',controller.setupdb)
+router.get('/setupdb',controller.setupdb)
 router.post('/signup',controller.signup);
 router.post('/login',controller.login);
 router.post('/:username/update',controller.updatePassword);

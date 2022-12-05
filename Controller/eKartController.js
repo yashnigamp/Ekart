@@ -12,12 +12,12 @@ exports.setupdb = async (req, res) => {
       email: "yash@gmail.com",
     };
     const productSample = {
-      productPicture: "http://localhost:3000/a(1).jpg",
-      productName: "Abstract",
-      manufacturer: "Infosys",
+      productPicture: "http://localhost:3000/a(2).jpg",
+      productName: "Minimalist",
+      manufacturer: "Attlasian",
       cost: 5000,
       rating: 4,
-      description: "Excellent Product in every way",
+      description: "Lorem Ipsum",
       colors: 3,
       discountPercentage: 20,
       deliveryCharge: 100,
@@ -60,6 +60,7 @@ exports.signup = async (req, res) => {
                       email: req.body.email,
                     };
                     const data = await Model.UserModel.create(userData);
+                    res.set('Access-Control-Allow-Origin', '*');
                     res.status(200).json({
                       message: "UserId-" + id,
                     });
@@ -88,6 +89,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
   Model.UserModel.findOne({
     $and: [{ email: req.body.email }, { password: req.body.password }],
   }).then((data) => {
